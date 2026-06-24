@@ -1,0 +1,1502 @@
+<!doctype html>
+<html lang="es-AR" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Las cuatro fases — Spartan IT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0E1620;
+    --surface: #15212E;
+    --surface-2: #1C2A3A;
+    --surface-3: #243447;
+    --line: #2C3E54;
+    --line-strong: #3F546F;
+    --text: #E8E4D9;
+    --text-2: #B5BFCC;
+    --text-3: #7C8A9C;
+    --amber: #E8A23A;
+    --amber-dim: #8C6224;
+    --cyan: #4FD1C5;
+    --danger: #E07856;
+    --ok: #7FB069;
+    --purple: #9B7BB8;
+    --grid-color: rgba(44,62,84,1);
+    --glow-color: rgba(232,162,58,0.08);
+    --code-bg: #0B1218;
+    --code-border: #1F2D3D;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --sans: 'Inter', system-ui, sans-serif;
+  }
+  [data-theme="light"] {
+    --bg: #F7F5EF;
+    --surface: #FFFFFF;
+    --surface-2: #F0EDE3;
+    --surface-3: #E5E0D2;
+    --line: #D8D2C2;
+    --line-strong: #B8AF98;
+    --text: #1A1F2E;
+    --text-2: #4A5468;
+    --text-3: #8A8676;
+    --amber: #B86F1F;
+    --amber-dim: #D89456;
+    --cyan: #2A8A82;
+    --danger: #B85540;
+    --ok: #5F7F3F;
+    --purple: #6B4A8C;
+    --grid-color: rgba(184,175,152,0.18);
+    --glow-color: rgba(184,111,31,0.06);
+    --code-bg: #1A2230;
+    --code-border: #2C3E54;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg); color: var(--text);
+    font-family: var(--sans); font-size: 15px; line-height: 1.55;
+    transition: background 0.2s, color 0.2s;
+  }
+  body {
+    background-image:
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 64px 64px;
+    background-position: -1px -1px;
+    background-attachment: fixed;
+    background-color: var(--bg);
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background: radial-gradient(ellipse at 50% -10%, var(--glow-color), transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+  .container { max-width: 1180px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+  /* Header */
+  header { padding: 40px 0 24px; border-bottom: 1px solid var(--line); }
+  .top-row {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
+  }
+  .brand {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--text-3); display: flex; align-items: center; gap: 12px;
+  }
+  .brand::before {
+    content: ''; width: 8px; height: 8px; background: var(--amber); border-radius: 50%;
+  }
+  [data-theme="dark"] .brand::before { box-shadow: 0 0 12px var(--amber); }
+
+  .theme-toggle {
+    background: none; border: 1px solid var(--line); color: var(--text-3);
+    padding: 8px 14px; font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.1em; cursor: pointer; border-radius: 2px;
+    text-transform: uppercase; transition: all 0.15s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .theme-toggle:hover { color: var(--text); border-color: var(--text-3); }
+  .theme-toggle::before { content: '◐'; font-size: 14px; }
+
+  h1 {
+    font-family: var(--mono); font-weight: 700; font-size: clamp(34px, 6vw, 60px);
+    line-height: 1.02; letter-spacing: -0.03em; margin-top: 16px;
+  }
+  h1 .accent { color: var(--amber); }
+  h1 .strike { text-decoration: line-through; text-decoration-thickness: 3px; color: var(--text-3); }
+  .subtitle {
+    margin-top: 20px; max-width: 720px; color: var(--text-2); font-size: 17px; line-height: 1.5;
+  }
+  .thesis {
+    margin-top: 24px; padding: 16px 20px; background: var(--surface-2);
+    border-left: 3px solid var(--cyan); border-radius: 0 3px 3px 0;
+    font-family: var(--mono); font-size: 13px; color: var(--text); max-width: 720px;
+  }
+  .thesis b { color: var(--cyan); }
+
+  /* Tabs */
+  .tabs {
+    display: flex; gap: 0; border-bottom: 1px solid var(--line);
+    margin-top: 32px; position: sticky; top: 0; background: var(--bg); z-index: 10;
+    overflow-x: auto;
+  }
+  [data-theme="light"] .tabs {
+    box-shadow: 0 4px 16px -8px rgba(26,31,46,0.08);
+  }
+  .tab {
+    background: none; border: none; color: var(--text-3); padding: 18px 24px;
+    font-family: var(--mono); font-size: 13px; font-weight: 500;
+    letter-spacing: 0.05em; cursor: pointer; position: relative;
+    transition: color 0.15s; white-space: nowrap;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--amber); }
+  .tab.active::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: -1px;
+    height: 2px; background: var(--amber);
+  }
+  .tab-num {
+    font-size: 10px; color: var(--text-3); margin-right: 8px;
+    border: 1px solid var(--line); padding: 2px 6px; border-radius: 2px;
+  }
+  .tab.active .tab-num { color: var(--amber); border-color: var(--amber-dim); }
+
+  /* Panels */
+  .panel { display: none; padding: 48px 0 80px; }
+  .panel.active { display: block; }
+
+  .eyebrow {
+    font-family: var(--mono); font-size: 11px; color: var(--amber);
+    letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 12px;
+  }
+  h2 {
+    font-family: var(--mono); font-weight: 700; font-size: 28px;
+    line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 18px;
+  }
+  h3 {
+    font-family: var(--mono); font-weight: 600; font-size: 17px;
+    margin-bottom: 10px; color: var(--text);
+  }
+  p { color: var(--text-2); margin-bottom: 14px; }
+  p strong { color: var(--text); font-weight: 600; }
+  .lead { font-size: 17px; max-width: 760px; }
+  .lead-mini { font-size: 14px; color: var(--text-3); max-width: 760px; margin-top: -8px; margin-bottom: 28px; }
+
+  /* === PHASE SELECTOR ===  */
+  .phase-selector {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+    background: var(--line); border: 1px solid var(--line);
+    margin-bottom: 32px;
+  }
+  .phase-btn {
+    background: var(--surface); padding: 18px 16px; text-align: left;
+    border: none; cursor: pointer; font-family: var(--mono);
+    color: var(--text-3); transition: all 0.15s;
+    border-top: 2px solid transparent;
+  }
+  .phase-btn:hover { color: var(--text); background: var(--surface-2); }
+  .phase-btn.active {
+    background: var(--surface-2); color: var(--text);
+    border-top-color: var(--amber);
+  }
+  .phase-btn .pn {
+    display: block; font-size: 11px; letter-spacing: 0.15em; color: var(--text-3);
+    margin-bottom: 6px;
+  }
+  .phase-btn.active .pn { color: var(--amber); }
+  .phase-btn .pt {
+    display: block; font-size: 14px; font-weight: 600; line-height: 1.2;
+  }
+
+  /* === ARCHITECTURE DIAGRAM === */
+  .diagram-host {
+    background: var(--surface); border: 1px solid var(--line);
+    padding: 36px 28px; margin-bottom: 32px; border-radius: 4px;
+    position: relative; overflow: hidden;
+  }
+  .diagram-title {
+    font-family: var(--mono); font-size: 11px; color: var(--text-3);
+    letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 28px;
+  }
+  .diagram-stage {
+    position: relative; height: 360px;
+    display: grid; place-items: center;
+  }
+  .diagram-svg {
+    width: 100%; max-width: 760px; height: auto;
+    display: none;
+  }
+  .diagram-svg.active { display: block; animation: fadeIn 0.3s; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* SVG element styles - inherit theme colors */
+  .node-fill { fill: var(--surface-2); }
+  .node-stroke { stroke: var(--line-strong); stroke-width: 1.5; }
+  .node-fill-active { fill: var(--amber); }
+  .node-stroke-active { stroke: var(--amber); stroke-width: 1.5; }
+  .node-fill-yours { fill: var(--surface-3); }
+  .node-stroke-yours { stroke: var(--cyan); stroke-width: 1.5; }
+  .node-fill-ext { fill: var(--surface); }
+  .node-text { fill: var(--text); font-family: var(--mono); font-size: 12px; font-weight: 600; }
+  .node-text-sm { fill: var(--text-3); font-family: var(--mono); font-size: 10px; }
+  .node-text-active { fill: var(--bg); font-family: var(--mono); font-size: 12px; font-weight: 700; }
+  [data-theme="light"] .node-text-active { fill: #FFFFFF; }
+  .arrow-line { stroke: var(--line-strong); stroke-width: 1.5; fill: none; }
+  .arrow-head { fill: var(--line-strong); }
+  .badge-controls { fill: var(--cyan); }
+  .badge-controls-text { fill: var(--bg); font-family: var(--mono); font-size: 9px; font-weight: 700; }
+  [data-theme="light"] .badge-controls-text { fill: #FFFFFF; }
+  .label-text { fill: var(--text-3); font-family: var(--mono); font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase; }
+
+  /* === PHASE DETAIL CARDS === */
+  .phase-detail { display: none; }
+  .phase-detail.active { display: block; animation: fadeIn 0.3s; }
+
+  .detail-grid {
+    display: grid; grid-template-columns: 2fr 1fr; gap: 24px;
+    align-items: start;
+  }
+  @media (max-width: 880px) { .detail-grid { grid-template-columns: 1fr; } }
+
+  .detail-main {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 4px; padding: 28px;
+  }
+  .detail-main h3 { font-size: 22px; margin-bottom: 14px; letter-spacing: -0.01em; }
+  .detail-main h4 {
+    font-family: var(--mono); font-size: 12px; color: var(--amber);
+    letter-spacing: 0.15em; text-transform: uppercase;
+    margin-top: 22px; margin-bottom: 10px;
+  }
+  .detail-main ul {
+    list-style: none; padding: 0; margin: 0;
+  }
+  .detail-main ul li {
+    padding: 6px 0 6px 18px; color: var(--text-2); font-size: 14px;
+    position: relative; line-height: 1.5;
+  }
+  .detail-main ul li::before {
+    content: '›'; position: absolute; left: 0; color: var(--amber);
+  }
+  .detail-main ul.bad li::before { content: '✕'; color: var(--danger); }
+
+  .detail-side {
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .spec-card {
+    background: var(--surface); border: 1px solid var(--line);
+    padding: 18px 20px; border-radius: 4px;
+  }
+  .spec-label {
+    font-family: var(--mono); font-size: 10px; color: var(--text-3);
+    letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 6px;
+  }
+  .spec-value {
+    font-family: var(--mono); font-size: 16px; color: var(--text);
+    font-weight: 600; line-height: 1.3;
+  }
+  .spec-value.amber { color: var(--amber); }
+  .spec-value.cyan { color: var(--cyan); }
+  .spec-value.danger { color: var(--danger); }
+  .spec-sub {
+    font-family: var(--sans); font-size: 12px; color: var(--text-3);
+    margin-top: 4px; line-height: 1.3;
+  }
+
+  /* === TREE === */
+  .tree {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 4px; padding: 40px; min-height: 480px;
+  }
+  @media (max-width: 720px) { .tree { padding: 24px; } }
+  .tree-step { animation: fadeIn 0.3s; }
+
+  .crumb {
+    display: flex; gap: 8px; flex-wrap: wrap; font-family: var(--mono);
+    font-size: 11px; color: var(--text-3); margin-bottom: 24px;
+    letter-spacing: 0.05em;
+  }
+  .crumb-item.curr { color: var(--amber); }
+  .crumb-sep { color: var(--line); }
+
+  .question {
+    font-family: var(--mono); font-weight: 700; font-size: 26px;
+    line-height: 1.2; margin-bottom: 12px; letter-spacing: -0.01em;
+  }
+  .question .accent { color: var(--amber); }
+  .question-help { color: var(--text-2); font-size: 15px; margin-bottom: 32px; max-width: 600px; }
+
+  .choices { display: grid; gap: 10px; max-width: 720px; }
+  .choice {
+    background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 3px; padding: 18px 22px; text-align: left;
+    color: var(--text); cursor: pointer; font-family: var(--sans);
+    font-size: 15px; transition: all 0.15s;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .choice:hover { border-color: var(--amber); background: var(--surface-3); transform: translateX(2px); }
+  .choice .choice-key {
+    font-family: var(--mono); font-size: 11px; color: var(--amber);
+    width: 24px; flex-shrink: 0;
+  }
+  .choice .choice-text { flex: 1; }
+  .choice .choice-text small {
+    display: block; color: var(--text-3); font-size: 12px; margin-top: 3px;
+    font-family: var(--mono);
+  }
+  .choice-back, .choice-restart {
+    margin-top: 32px; background: none; border: 1px solid var(--line);
+    color: var(--text-3); padding: 10px 16px; cursor: pointer;
+    font-family: var(--mono); font-size: 12px; border-radius: 2px;
+    letter-spacing: 0.05em;
+  }
+  .choice-back:hover, .choice-restart:hover { color: var(--text); border-color: var(--text-3); }
+
+  .verdict {
+    background: var(--surface-2); border-left: 3px solid var(--amber);
+    padding: 28px 32px; border-radius: 3px;
+  }
+  .verdict h3 {
+    font-family: var(--mono); font-size: 13px; color: var(--amber);
+    letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px;
+  }
+  .v-title {
+    font-family: var(--mono); font-weight: 700; font-size: 24px;
+    margin-bottom: 16px; letter-spacing: -0.01em;
+  }
+  .v-body { color: var(--text-2); font-size: 15px; }
+  .v-body p { margin-bottom: 12px; }
+  .v-body ul { margin: 10px 0 12px 20px; color: var(--text-2); }
+  .v-body ul li { margin-bottom: 6px; }
+  .v-body code {
+    font-family: var(--mono); font-size: 12px; background: var(--bg);
+    padding: 2px 6px; border-radius: 2px; color: var(--amber);
+  }
+  .v-meta {
+    margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line);
+    display: flex; gap: 32px; font-family: var(--mono); font-size: 12px;
+    flex-wrap: wrap;
+  }
+  .v-meta > div { color: var(--text-3); letter-spacing: 0.05em; }
+  .v-meta b { display: block; color: var(--text); font-size: 16px; margin-top: 4px; font-weight: 700; }
+  .v-meta .ok b { color: var(--ok); }
+  .v-meta .danger b { color: var(--danger); }
+
+  /* === CODE COMPARISON === */
+  .code-intro {
+    background: var(--surface); border: 1px solid var(--line);
+    padding: 24px 28px; border-radius: 4px; margin-bottom: 32px;
+  }
+  .code-intro h3 { font-size: 18px; margin-bottom: 10px; }
+  .code-intro .scenario {
+    font-family: var(--mono); font-size: 13px; color: var(--amber);
+    margin-top: 12px; padding: 12px 16px; background: var(--surface-2);
+    border-radius: 3px;
+  }
+
+  .code-block {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 4px; margin-bottom: 24px; overflow: hidden;
+  }
+  .code-header {
+    padding: 14px 20px; border-bottom: 1px solid var(--line);
+    background: var(--surface-2);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 8px;
+  }
+  .code-header .ch-left { display: flex; align-items: baseline; gap: 12px; }
+  .code-header .ch-num {
+    font-family: var(--mono); font-size: 11px; color: var(--amber);
+    letter-spacing: 0.15em;
+  }
+  .code-header .ch-title {
+    font-family: var(--mono); font-weight: 600; font-size: 15px;
+  }
+  .code-header .ch-tag {
+    font-family: var(--mono); font-size: 10px;
+    background: var(--surface-3); color: var(--text-2);
+    padding: 3px 8px; border-radius: 2px; letter-spacing: 0.05em;
+  }
+  .code-note {
+    padding: 16px 20px; background: var(--surface-2);
+    border-bottom: 1px solid var(--line); font-size: 14px; color: var(--text-2);
+  }
+  .code-note b { color: var(--text); }
+  .code-note .delta {
+    font-family: var(--mono); font-size: 11px; color: var(--cyan);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px;
+    display: block;
+  }
+  pre.code {
+    background: var(--code-bg); border: none; padding: 20px 24px;
+    overflow-x: auto; font-family: var(--mono); font-size: 12.5px;
+    line-height: 1.55; color: #B5BFCC; margin: 0;
+  }
+  pre.code .c1 { color: #7C8A9C; font-style: italic; } /* comment */
+  pre.code .k  { color: #9B7BB8; } /* keyword */
+  pre.code .s  { color: #7FB069; } /* string */
+  pre.code .n  { color: #E8A23A; } /* number/built-in */
+  pre.code .f  { color: #4FD1C5; } /* function */
+  pre.code .t  { color: #E07856; } /* type */
+  pre.code .v  { color: #B5BFCC; } /* var */
+
+  footer {
+    border-top: 1px solid var(--line); padding: 32px 0 60px;
+    font-family: var(--mono); font-size: 11px; color: var(--text-3);
+    letter-spacing: 0.05em;
+  }
+  footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  footer .link-out {
+    color: var(--amber); text-decoration: none;
+  }
+  footer .link-out:hover { text-decoration: underline; }
+
+  /* Glossary tooltip */
+  abbr.term {
+    text-decoration: none; border-bottom: 1px dotted var(--amber);
+    cursor: help; color: inherit; position: relative;
+  }
+  abbr.term:hover { color: var(--amber); }
+
+  /* Phase subtitle (human label next to technical name) */
+  .phase-btn .ph {
+    display: block; font-size: 10px; color: var(--text-3);
+    margin-top: 4px; letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .phase-btn.active .ph { color: var(--cyan); }
+  .detail-main h3 .human-tag {
+    display: inline-block; font-family: var(--mono); font-size: 11px;
+    color: var(--cyan); letter-spacing: 0.15em; text-transform: uppercase;
+    margin-left: 10px; vertical-align: middle; padding: 3px 8px;
+    background: var(--surface-2); border-radius: 2px;
+    border: 1px solid var(--line);
+  }
+
+  /* Next steps in verdict */
+  .v-next {
+    margin-top: 18px; padding: 14px 18px; background: var(--bg);
+    border: 1px dashed var(--line-strong); border-radius: 3px;
+  }
+  .v-next-title {
+    font-family: var(--mono); font-size: 10px; color: var(--amber);
+    letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px;
+  }
+  .v-next ul { margin: 0 0 0 18px; padding: 0; }
+  .v-next ul li { margin-bottom: 4px; font-size: 14px; color: var(--text-2); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="top-row">
+      <div class="brand">Spartan IT · arquitectura · v1.0</div>
+      <button class="theme-toggle" id="theme-toggle">Modo oscuro</button>
+    </div>
+    <h1>El <span class="accent">MCP</span> no muere,<br>se <span class="accent">envuelve</span>.</h1>
+    <p class="subtitle">
+      Cuatro fases en la madurez de un agente con LLM: desde un <abbr class="term" title="Model Context Protocol — el estándar abierto de Anthropic para que un modelo de IA descubra y llame funciones de tu sistema">MCP</abbr> server que vos consultás
+      con Claude Desktop, hasta un producto SaaS <abbr class="term" title="Una sola plataforma sirviendo a múltiples clientes con datos aislados y configuración por cliente">multi-tenant</abbr>. Para entender en cuál estás,
+      cuándo saltar a la siguiente, y qué del trabajo ya hecho se mantiene en cada salto.
+    </p>
+    <div class="thesis">
+      <b>tesis</b> · el trabajo del MCP es el core técnico que sobrevive a todas las fases.
+      lo que cambia entre una y otra es <i>quién es el usuario</i>, <i>quién paga el modelo</i>,
+      y <i>qué capa nueva se agrega encima</i>.
+      <br><br>
+      <b style="color: var(--text-3)">nota</b> · el modelo mental aplica igual con Anthropic, OpenAI, Gemini o modelos
+      locales (Ollama, vLLM). cambia el proveedor del LLM, no la estructura de las fases.
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <nav class="tabs">
+    <button class="tab active" data-panel="fases"><span class="tab-num">01</span>Las cuatro fases</button>
+    <button class="tab" data-panel="diagnostico"><span class="tab-num">02</span>¿En qué fase estoy?</button>
+    <button class="tab" data-panel="codigo"><span class="tab-num">03</span>La misma función en cada fase</button>
+  </nav>
+
+  <!-- ============ TAB 1: FASES ============ -->
+  <section class="panel active" id="fases">
+    <div class="eyebrow">Mapa</div>
+    <h2>Las cuatro fases, en una imagen</h2>
+    <p class="lead-mini">Tocá una fase para ver la arquitectura y los detalles.</p>
+
+    <div class="phase-selector" id="phase-selector">
+      <button class="phase-btn active" data-phase="0">
+        <span class="pn">Fase 00</span>
+        <span class="pt">Claude.ai puro</span>
+        <span class="ph">Explorar</span>
+      </button>
+      <button class="phase-btn" data-phase="1">
+        <span class="pn">Fase 01</span>
+        <span class="pt">MCP + Claude Desktop</span>
+        <span class="ph">Conectar</span>
+      </button>
+      <button class="phase-btn" data-phase="2">
+        <span class="pn">Fase 02</span>
+        <span class="pt">Agente propio</span>
+        <span class="ph">Operar</span>
+      </button>
+      <button class="phase-btn" data-phase="3">
+        <span class="pn">Fase 03</span>
+        <span class="pt">SaaS multi-tenant</span>
+        <span class="ph">Escalar</span>
+      </button>
+    </div>
+
+    <div class="diagram-host">
+      <div class="diagram-title">› arquitectura · qué controla cada parte</div>
+      <div class="diagram-stage">
+        <!-- FASE 0 -->
+        <svg class="diagram-svg active" data-phase="0" viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg">
+          <!-- Vos -->
+          <rect class="node-fill-yours node-stroke-yours" x="40" y="130" width="120" height="60" rx="3"/>
+          <text class="node-text" x="100" y="155" text-anchor="middle">Vos</text>
+          <text class="node-text-sm" x="100" y="172" text-anchor="middle">usuario</text>
+          <!-- Arrow -->
+          <line class="arrow-line" x1="170" y1="160" x2="295" y2="160"/>
+          <polygon class="arrow-head" points="295,156 305,160 295,164"/>
+          <text class="label-text" x="232" y="148" text-anchor="middle">consulta</text>
+          <!-- Claude.ai -->
+          <rect class="node-fill-active node-stroke-active" x="315" y="120" width="170" height="80" rx="3"/>
+          <text class="node-text-active" x="400" y="148" text-anchor="middle">Claude.ai</text>
+          <text class="node-text-active" x="400" y="166" text-anchor="middle" style="font-size:10px; font-weight:500">app de chat</text>
+          <text class="node-text-active" x="400" y="183" text-anchor="middle" style="font-size:10px; font-weight:500">de Anthropic</text>
+          <!-- Sin datos del cliente -->
+          <rect class="node-fill node-stroke" x="540" y="100" width="180" height="120" rx="3" stroke-dasharray="4 4"/>
+          <text class="node-text-sm" x="630" y="135" text-anchor="middle">tus datos del</text>
+          <text class="node-text-sm" x="630" y="150" text-anchor="middle">lab / cerealera</text>
+          <text class="node-text-sm" x="630" y="180" text-anchor="middle" style="fill: var(--danger)">no conectados</text>
+          <!-- Labels -->
+          <text class="label-text" x="100" y="225" text-anchor="middle">vos controlás</text>
+          <text class="label-text" x="400" y="225" text-anchor="middle">anthropic controla</text>
+          <text class="label-text" x="630" y="240" text-anchor="middle">(no aplica)</text>
+        </svg>
+
+        <!-- FASE 1 -->
+        <svg class="diagram-svg" data-phase="1" viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg">
+          <!-- Vos -->
+          <rect class="node-fill-yours node-stroke-yours" x="20" y="130" width="100" height="60" rx="3"/>
+          <text class="node-text" x="70" y="155" text-anchor="middle">Vos</text>
+          <text class="node-text-sm" x="70" y="172" text-anchor="middle">/ equipo</text>
+          <!-- Arrow -->
+          <line class="arrow-line" x1="125" y1="160" x2="200" y2="160"/>
+          <polygon class="arrow-head" points="200,156 210,160 200,164"/>
+          <!-- Claude Desktop -->
+          <rect class="node-fill-active node-stroke-active" x="220" y="120" width="160" height="80" rx="3"/>
+          <text class="node-text-active" x="300" y="148" text-anchor="middle">Claude Desktop</text>
+          <text class="node-text-active" x="300" y="166" text-anchor="middle" style="font-size:10px; font-weight:500">system prompt</text>
+          <text class="node-text-active" x="300" y="180" text-anchor="middle" style="font-size:10px; font-weight:500">no controlado</text>
+          <!-- Arrow MCP -->
+          <line class="arrow-line" x1="385" y1="160" x2="465" y2="160"/>
+          <polygon class="arrow-head" points="465,156 475,160 465,164"/>
+          <text class="label-text" x="425" y="148" text-anchor="middle">MCP</text>
+          <!-- MCP Server (yours) -->
+          <rect class="node-fill-yours node-stroke-yours" x="485" y="120" width="140" height="80" rx="3"/>
+          <text class="node-text" x="555" y="148" text-anchor="middle">MCP Server</text>
+          <text class="node-text-sm" x="555" y="166" text-anchor="middle">tus tools</text>
+          <text class="node-text-sm" x="555" y="180" text-anchor="middle">(GCP)</text>
+          <!-- Arrow to DB -->
+          <line class="arrow-line" x1="630" y1="160" x2="690" y2="160"/>
+          <polygon class="arrow-head" points="690,156 700,160 690,164"/>
+          <!-- DB -->
+          <rect class="node-fill-yours node-stroke-yours" x="700" y="135" width="50" height="50" rx="3"/>
+          <text class="node-text-sm" x="725" y="158" text-anchor="middle">DB</text>
+          <text class="node-text-sm" x="725" y="172" text-anchor="middle">lab</text>
+          <!-- Badge controls -->
+          <rect class="badge-controls" x="495" y="105" width="100" height="14" rx="2"/>
+          <text class="badge-controls-text" x="545" y="115" text-anchor="middle">VOS CONTROLÁS</text>
+          <!-- Labels -->
+          <text class="label-text" x="300" y="225" text-anchor="middle">anthropic controla</text>
+          <text class="label-text" x="555" y="225" text-anchor="middle">vos controlás</text>
+        </svg>
+
+        <!-- FASE 2 -->
+        <svg class="diagram-svg" data-phase="2" viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg">
+          <!-- Cliente final -->
+          <rect class="node-fill-ext node-stroke" x="20" y="160" width="110" height="60" rx="3"/>
+          <text class="node-text" x="75" y="185" text-anchor="middle">Luciana</text>
+          <text class="node-text-sm" x="75" y="202" text-anchor="middle">cliente final</text>
+          <!-- Arrow -->
+          <line class="arrow-line" x1="135" y1="190" x2="195" y2="190"/>
+          <polygon class="arrow-head" points="195,186 205,190 195,194"/>
+          <!-- Web propia -->
+          <rect class="node-fill-yours node-stroke-yours" x="215" y="150" width="130" height="80" rx="3"/>
+          <text class="node-text" x="280" y="178" text-anchor="middle">Tu web</text>
+          <text class="node-text-sm" x="280" y="196" text-anchor="middle">(Laravel)</text>
+          <text class="node-text-sm" x="280" y="210" text-anchor="middle">UI propia</text>
+          <!-- Arrow to backend -->
+          <line class="arrow-line" x1="350" y1="190" x2="395" y2="190"/>
+          <polygon class="arrow-head" points="395,186 405,190 395,194"/>
+          <!-- Backend with system prompt -->
+          <rect class="node-fill-yours node-stroke-yours" x="415" y="100" width="170" height="180" rx="3"/>
+          <text class="node-text" x="500" y="125" text-anchor="middle">AgentService</text>
+          <text class="node-text-sm" x="500" y="145" text-anchor="middle">─────────────</text>
+          <text class="node-text-sm" x="500" y="165" text-anchor="middle">system prompt</text>
+          <text class="node-text-sm" x="500" y="180" text-anchor="middle">tools</text>
+          <text class="node-text-sm" x="500" y="195" text-anchor="middle">caching</text>
+          <text class="node-text-sm" x="500" y="210" text-anchor="middle">historial</text>
+          <text class="node-text-sm" x="500" y="225" text-anchor="middle">─────────────</text>
+          <text class="node-text-sm" x="500" y="245" text-anchor="middle" style="fill: var(--cyan)">funciones del</text>
+          <text class="node-text-sm" x="500" y="259" text-anchor="middle" style="fill: var(--cyan)">MCP reutilizadas</text>
+          <!-- Arrow to API -->
+          <line class="arrow-line" x1="590" y1="135" x2="640" y2="135"/>
+          <polygon class="arrow-head" points="640,131 650,135 640,139"/>
+          <!-- API Anthropic -->
+          <rect class="node-fill-active node-stroke-active" x="660" y="105" width="90" height="60" rx="3"/>
+          <text class="node-text-active" x="705" y="130" text-anchor="middle" style="font-size:11px">API</text>
+          <text class="node-text-active" x="705" y="146" text-anchor="middle" style="font-size:10px; font-weight:500">Anthropic</text>
+          <!-- Arrow to DB -->
+          <line class="arrow-line" x1="590" y1="245" x2="640" y2="245"/>
+          <polygon class="arrow-head" points="640,241 650,245 640,249"/>
+          <!-- DB -->
+          <rect class="node-fill-yours node-stroke-yours" x="660" y="215" width="90" height="60" rx="3"/>
+          <text class="node-text" x="705" y="240" text-anchor="middle" style="font-size:12px">DB</text>
+          <text class="node-text-sm" x="705" y="258" text-anchor="middle">lab / cerealera</text>
+          <!-- Badge controls -->
+          <rect class="badge-controls" x="430" y="85" width="140" height="14" rx="2"/>
+          <text class="badge-controls-text" x="500" y="95" text-anchor="middle">VOS CONTROLÁS TODO</text>
+          <!-- Labels -->
+          <text class="label-text" x="75" y="245" text-anchor="middle">cliente final</text>
+          <text class="label-text" x="280" y="255" text-anchor="middle">tu producto</text>
+          <text class="label-text" x="705" y="190" text-anchor="middle">externo</text>
+        </svg>
+
+        <!-- FASE 3 -->
+        <svg class="diagram-svg" data-phase="3" viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg">
+          <!-- Clientes -->
+          <rect class="node-fill-ext node-stroke" x="20" y="80" width="100" height="50" rx="3"/>
+          <text class="node-text-sm" x="70" y="100" text-anchor="middle">Cerealera</text>
+          <text class="node-text-sm" x="70" y="115" text-anchor="middle">(Luciana)</text>
+          <rect class="node-fill-ext node-stroke" x="20" y="170" width="100" height="50" rx="3"/>
+          <text class="node-text-sm" x="70" y="190" text-anchor="middle">Laboratorio</text>
+          <text class="node-text-sm" x="70" y="205" text-anchor="middle">(Dra. Pérez)</text>
+          <rect class="node-fill-ext node-stroke" x="20" y="260" width="100" height="50" rx="3"/>
+          <text class="node-text-sm" x="70" y="280" text-anchor="middle">Clínica</text>
+          <text class="node-text-sm" x="70" y="295" text-anchor="middle">(staff)</text>
+          <!-- Arrows -->
+          <line class="arrow-line" x1="125" y1="105" x2="195" y2="170"/>
+          <line class="arrow-line" x1="125" y1="195" x2="195" y2="200"/>
+          <line class="arrow-line" x1="125" y1="285" x2="195" y2="230"/>
+          <polygon class="arrow-head" points="195,167 207,170 197,178"/>
+          <polygon class="arrow-head" points="195,196 207,200 197,206"/>
+          <polygon class="arrow-head" points="197,222 207,230 195,232"/>
+          <!-- Platform core -->
+          <rect class="node-fill-yours node-stroke-yours" x="210" y="130" width="200" height="160" rx="3"/>
+          <text class="node-text" x="310" y="158" text-anchor="middle">Spartan Platform</text>
+          <text class="node-text-sm" x="310" y="178" text-anchor="middle">───────────────</text>
+          <text class="node-text-sm" x="310" y="195" text-anchor="middle">router por tenant</text>
+          <text class="node-text-sm" x="310" y="210" text-anchor="middle">configs por cliente</text>
+          <text class="node-text-sm" x="310" y="225" text-anchor="middle">aislamiento datos</text>
+          <text class="node-text-sm" x="310" y="240" text-anchor="middle">billing & quotas</text>
+          <text class="node-text-sm" x="310" y="260" text-anchor="middle">───────────────</text>
+          <text class="node-text-sm" x="310" y="278" text-anchor="middle" style="fill: var(--cyan)">mismo agent core</text>
+          <!-- Arrows to APIs -->
+          <line class="arrow-line" x1="415" y1="170" x2="475" y2="170"/>
+          <polygon class="arrow-head" points="475,166 485,170 475,174"/>
+          <line class="arrow-line" x1="415" y1="250" x2="475" y2="250"/>
+          <polygon class="arrow-head" points="475,246 485,250 475,254"/>
+          <!-- API + DBs -->
+          <rect class="node-fill-active node-stroke-active" x="495" y="140" width="90" height="60" rx="3"/>
+          <text class="node-text-active" x="540" y="165" text-anchor="middle" style="font-size:11px">API LLM</text>
+          <text class="node-text-active" x="540" y="180" text-anchor="middle" style="font-size:9px; font-weight:500">por tenant</text>
+          <!-- DBs per tenant -->
+          <rect class="node-fill node-stroke" x="495" y="220" width="60" height="35" rx="2"/>
+          <text class="node-text-sm" x="525" y="242" text-anchor="middle">db₁</text>
+          <rect class="node-fill node-stroke" x="563" y="220" width="60" height="35" rx="2"/>
+          <text class="node-text-sm" x="593" y="242" text-anchor="middle">db₂</text>
+          <rect class="node-fill node-stroke" x="495" y="260" width="60" height="35" rx="2"/>
+          <text class="node-text-sm" x="525" y="282" text-anchor="middle">db₃</text>
+          <rect class="node-fill node-stroke" x="563" y="260" width="60" height="35" rx="2"/>
+          <text class="node-text-sm" x="593" y="282" text-anchor="middle">db₄</text>
+          <text class="label-text" x="559" y="313" text-anchor="middle">datos aislados por cliente</text>
+          <!-- Billing layer -->
+          <rect class="node-fill-yours node-stroke-yours" x="640" y="140" width="100" height="160" rx="3" stroke-dasharray="3 3"/>
+          <text class="node-text-sm" x="690" y="170" text-anchor="middle">facturación</text>
+          <text class="node-text-sm" x="690" y="190" text-anchor="middle">métricas</text>
+          <text class="node-text-sm" x="690" y="210" text-anchor="middle">observability</text>
+          <text class="node-text-sm" x="690" y="230" text-anchor="middle" style="fill: var(--amber)">─────────</text>
+          <text class="node-text-sm" x="690" y="250" text-anchor="middle" style="fill: var(--amber)">cobrás $/mes</text>
+          <text class="node-text-sm" x="690" y="265" text-anchor="middle" style="fill: var(--amber)">a cada cliente</text>
+          <!-- Badge -->
+          <rect class="badge-controls" x="225" y="115" width="170" height="14" rx="2"/>
+          <text class="badge-controls-text" x="310" y="125" text-anchor="middle">SPARTAN ES LA PLATAFORMA</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- PHASE DETAILS -->
+    <div class="phase-detail active" data-phase="0">
+      <div class="detail-grid">
+        <div class="detail-main">
+          <h3>Fase 00 — Claude.ai puro <span class="human-tag">Explorar</span></h3>
+          <p>Vos abrís claude.ai (o la app), tipeás preguntas, recibís respuestas. Sin <abbr class="term" title="Una función que el modelo puede invocar para consultar tus datos o realizar acciones (consultar saldo, leer una orden, etc.)">tools</abbr>, sin conexión a tus datos, sin nada custom. La fase que muchos saltean sin darse cuenta porque ya tienen una cuenta.</p>
+          <h4>Sirve para</h4>
+          <ul>
+            <li>Validar si la idea de un agente para tu cliente tiene sentido conceptual antes de gastar tiempo en código.</li>
+            <li>Tareas personales de productividad — escribir, resumir, traducir.</li>
+            <li>Calibrar qué tan bueno es el modelo para tu dominio sin ninguna infraestructura.</li>
+          </ul>
+          <h4>No sirve para</h4>
+          <ul class="bad">
+            <li>Acceder a datos privados del cliente (bases SQL, FTP, archivos internos).</li>
+            <li>Construir cualquier producto reproducible.</li>
+            <li>Automatizar workflows.</li>
+          </ul>
+        </div>
+        <div class="detail-side">
+          <div class="spec-card">
+            <div class="spec-label">Usuario final</div>
+            <div class="spec-value">Vos / tu equipo</div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-label">Quién paga el modelo</div>
+            <div class="spec-value">Vos</div>
+            <div class="spec-sub">suscripción Standard ~$20/mes</div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-label">Lo que controlás</div>
+            <div class="spec-value cyan">Nada del modelo</div>
+            <div class="spec-sub">solo qué le preguntás</div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-label">Salto natural</div>
+            <div class="spec-value amber">→ Fase 01</div>
+            <div class="spec-sub">cuando necesitás conectar tus datos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-detail" data-phase="1">
+      <div class="detail-grid">
+        <div class="detail-main">
+          <h3>Fase 01 — MCP + Claude Desktop <span class="human-tag">Conectar</span></h3>
+          <p>Armás un MCP server (en tu GCP, con tu Laravel o lo que sea) que expone funciones para consultar las bases del cliente. Lo conectás a Claude Desktop. Vos / Alberto / Tomás se conectan al cliente "hablando con Claude", y Claude usa las tools del MCP para leer datos reales. <strong>Donde están hoy con el lab.</strong></p>
+          <h4>Sirve para</h4>
+          <ul>
+            <li>Demos rápidas a clientes (les mostrás lo que se puede hacer con sus datos en una pantalla).</li>
+            <li>Exploración interna del equipo — Alberto se conecta a la base del lab y prueba consultas reales.</li>
+            <li>Validar qué consultas tienen sentido antes de invertir en una UI.</li>
+            <li>Debugging del lado tools (la lógica SQL, el manejo de errores, los formatos de salida).</li>
+          </ul>
+          <h4>También puede servir como producto final si</h4>
+          <ul>
+            <li>El cliente tiene equipo técnico interno cómodo configurando Claude Desktop.</li>
+            <li>El presupuesto es ajustado y no justifica desarrollar UI propia.</li>
+            <li>El alcance es chico (3-5 usuarios) y el cliente ya paga su propia suscripción de Claude.</li>
+            <li>No necesitás cobrar por uso del modelo, solo por el setup del MCP.</li>
+          </ul>
+          <h4>No sirve para</h4>
+          <ul class="bad">
+            <li>Que un usuario sin equipo técnico (como Luciana) lo use directamente — necesitaría instalar Claude Desktop, configurar el MCP server, autenticar.</li>
+            <li>Controlar el <abbr class="term" title="Las instrucciones permanentes del agente, que se envían al modelo en cada llamada antes que el mensaje del usuario">system prompt</abbr> — heredás el de Claude Desktop (10-15k tokens, no podés tocarlo).</li>
+            <li>Optimizar costos de tokens — el overhead es fijo y enorme.</li>
+            <li>Personalizar la UI o integrar con un workflow propio del cliente.</li>
+          </ul>
+          <h4>El malentendido común</h4>
+          <p style="font-size: 14px;">Mucha gente arma el MCP server pensando que es "el producto". <strong>En la mayoría de los casos no lo es</strong>. Es la herramienta interna del equipo técnico para construir y validar. El producto cliente-facing vive en la fase 02. La excepción son los casos del recuadro de arriba.</p>
+        </div>
+        <div class="detail-side">
+          <div class="spec-card">
+            <div class="spec-label">Usuario final</div>
+            <div class="spec-value">Vos / equipo técnico</div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-label">Quién paga el modelo</div>
+            <div class="spec-value">Vos</div>
+            <div class="spec-sub">suscripción Standard cubre uso interno</div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-label">Lo que controlás</div>
+            <div class="spec-value cyan">Tools y datos</div>
+            <div class="spec-sub">no el system prompt ni el modelo</div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-label">Costo típico de un turno</div>
+            <div class="spec-value danger">~14k tokens*</div>
+            <div class="spec-sub">por el system prompt de Claude Desktop · *orden de magnitud, no exacto</div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-label">Salto natural</div>
+            <div class="spec-value amber">→ Fase 02</div>
+            <div class="spec-sub">cuando el cliente quiere su propia UI</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-detail" data-phase="2">
+      <div class="detail-grid">
+        <div class="detail-main">
+          <h3>Fase 02 — Agente propio (cliente-facing) <span class="human-tag">Operar</span></h3>
+          <p>Armás una web propia donde el cliente del cliente entra y habla con el agente. El backend (Laravel) define el system prompt, gestiona el historial, ejecuta las tools y llama directo al API de Anthropic. <strong>Las funciones que escribiste en el MCP server siguen siendo las mismas</strong>: solo cambia que ahora las invoca tu código en vez del protocolo MCP.</p>
+          <h4>Lo que aparece nuevo</h4>
+          <ul>
+            <li>System prompt propio, versionado, editable sin redeploy.</li>
+            <li>Control total de las llamadas al API — podés aplicar <abbr class="term" title="Cachear el system prompt para que Anthropic no re-procese todo en cada llamada — paga 10% del precio normal en cache reads (ahorro de ~70% en agentes activos)">prompt caching</abbr>, semantic cache, todo lo que vimos en la otra app.</li>
+            <li>UI a medida — colores del cliente, integraciones con su workflow, autenticación propia.</li>
+            <li>Facturación propia — el cliente paga un fee mensual a Spartan, vos pagás el API.</li>
+            <li>Autenticación, roles y permisos por usuario.</li>
+            <li>Logs de auditoría: quién consultó qué, cuándo, con qué resultado. Crítico para clientes regulados (lab, salud).</li>
+            <li>Telemetría detallada de uso, errores, latencia.</li>
+          </ul>
+          <h4>Cuándo conviene saltar</h4>
+          <ul>
+            <li>El cliente del lab dice "esto está bueno, lo quiero usar con mi equipo".</li>
+            <li>Querés cobrar por el servicio (no se puede facturar uso de Claude Desktop a un tercero).</li>
+            <li>Necesitás integrar con un workflow del cliente (por ejemplo, abrir un ticket desde el chat).</li>
+            <li>Estás viendo gastos altos en tokens y querés aplicar prompt caching / semantic cache.</li>
+            <li>El cliente está regulado y necesita trazabilidad de cada consulta.</li>
+          </ul>
+          <h4>Nota técnica avanzada</h4>
+          <p style="font-size: 14px;">El MCP server <em>también se puede usar desde el agente Laravel</em> — Anthropic tiene un cliente MCP que podés llamar desde código. En la práctica, para Spartan, conviene reescribir las tools como clases PHP nativas en fase 02 porque te da más control. El MCP server del lab sigue vivo en paralelo para uso interno.</p>
+        </div>
+        <div class="detail-side">
+          <div class="spec-card">
+            <div class="spec-label">Usuario final</div>
+            <div class="spec-value">Cliente del cliente</div>
+            <div class="spec-sub">Luciana, médicos del lab</div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-label">Quién paga el modelo</div>
+            <div class="spec-value">Vos (API por uso)</div>
+            <div class="spec-sub">se lo cargás al cliente con margen</div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-label">Lo que controlás</div>
+            <div class="spec-value cyan">Todo</div>
+            <div class="spec-sub">prompt, tools, UI, modelo, caching</div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-label">Costo típico de un turno</div>
+            <div class="spec-value ok">~3k tokens*</div>
+            <div class="spec-sub">5x menos que fase 01 · *orden de magnitud, no exacto</div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-label">Salto natural</div>
+            <div class="spec-value amber">→ Fase 03</div>
+            <div class="spec-sub">cuando hay 3+ clientes con el mismo agente</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-detail" data-phase="3">
+      <div class="detail-grid">
+        <div class="detail-main">
+          <h3>Fase 03 — SaaS multi-tenant <span class="human-tag">Escalar</span></h3>
+          <p>Mismo agente core, múltiples clientes con configuración propia. Spartan se convierte en plataforma: un código base, distintos system prompts por cliente, datos aislados, billing por consumo. Es la fase donde dejás de ser una consultora y pasás a ser un producto.</p>
+          <h4>Lo que aparece nuevo</h4>
+          <ul>
+            <li>Tabla <code style="font-family:var(--mono); color:var(--amber); font-size:13px">tenants</code> + middleware de routing por cliente en cada request.</li>
+            <li>Configuración por cliente: prompt, tools habilitadas, modelo, quotas, límites.</li>
+            <li>Aislamiento de datos — cada cliente tiene su conexión a base, sus credenciales, su namespace.</li>
+            <li>Métricas agregadas para el dashboard interno de Spartan (uso por cliente, ingresos, costos).</li>
+            <li>Onboarding de clientes nuevos sin tocar código — todo se hace por config.</li>
+          </ul>
+          <h4>Cuándo conviene saltar</h4>
+          <ul>
+            <li>Tenés 2-3 clientes con un agente que es "parecido pero distinto". Si no, fase 02 con configs estáticas alcanza.</li>
+            <li>Empezás a perder tiempo en mantener varios deploys casi iguales.</li>
+            <li>Querés ofrecer un self-service donde un cliente nuevo se da de alta solo (futuro, no urgente).</li>
+          </ul>
+          <h4>El riesgo</h4>
+          <p style="font-size: 14px;">Es fácil saltar a fase 03 antes de tiempo y construir abstracciones para clientes que todavía no tenés. Regla práctica: <strong>no abstraigas hasta tener el tercer cliente</strong>. Hasta entonces, dos instancias de fase 02 con configs estáticas son más rápidas y menos riesgosas.</p>
+        </div>
+        <div class="detail-side">
+          <div class="spec-card">
+            <div class="spec-label">Usuario final</div>
+            <div class="spec-value">Múltiples clientes</div>
+            <div class="spec-sub">cada uno con sus usuarios finales</div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-label">Quién paga el modelo</div>
+            <div class="spec-value">Vos (al pool)</div>
+            <div class="spec-sub">facturás suscripción + uso a cada cliente</div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-label">Lo que controlás</div>
+            <div class="spec-value cyan">Todo + plataforma</div>
+            <div class="spec-sub">también el cómo se aíslan datos</div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-label">Modelo de negocio</div>
+            <div class="spec-value ok">Recurrente</div>
+            <div class="spec-sub">deja de ser consultora, pasa a producto</div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-label">Madurez requerida</div>
+            <div class="spec-value danger">Alta</div>
+            <div class="spec-sub">no saltar antes del tercer cliente</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TAB 2: DIAGNÓSTICO ============ -->
+  <section class="panel" id="diagnostico">
+    <div class="eyebrow">Diagnóstico</div>
+    <h2>¿En qué fase estoy hoy?</h2>
+    <p class="lead" style="margin-bottom: 36px;">
+      Cuatro o cinco preguntas para ubicarte. Responder en función de la situación
+      actual real, no la deseada. Después miramos el próximo salto.
+    </p>
+    <div class="tree" id="tree-host"></div>
+  </section>
+
+  <!-- ============ TAB 3: CÓDIGO ============ -->
+  <section class="panel" id="codigo">
+    <div class="eyebrow">Continuidad</div>
+    <h2>La misma función en cada fase</h2>
+    <p class="lead" style="margin-bottom: 24px;">
+      Para volver visible la tesis: <strong>el core del MCP no se tira</strong>.
+      Tomamos una función concreta del lab y la mostramos cómo se ve en cada fase.
+      Lo que aparece en color es lo que cambia respecto a la fase anterior.
+    </p>
+
+    <div class="code-intro">
+      <h3>El escenario</h3>
+      <p style="margin-bottom: 0;">El usuario pregunta: <em>"¿cuántos pacientes mayores de 60 tienen análisis pendientes?"</em>
+      El agente necesita una función que reciba edad mínima y devuelva el conteo.
+      Es la misma necesidad en las cuatro fases — sólo cambia quién la invoca y cómo.</p>
+      <div class="scenario">› función a implementar: <b>contar_pacientes_con_analisis_pendientes(edad_minima: int) → int</b></div>
+    </div>
+
+    <!-- FASE 0 -->
+    <div class="code-block">
+      <div class="code-header">
+        <div class="ch-left">
+          <span class="ch-num">FASE 00</span>
+          <span class="ch-title">Claude.ai puro</span>
+        </div>
+        <span class="ch-tag">no aplica</span>
+      </div>
+      <div class="code-note">
+        <span class="delta">no hay función</span>
+        En esta fase no hay forma de conectar a la base. Lo más que podés hacer es <b>pegar el resultado a mano</b> después de correr la query en tu cliente SQL. Por eso fase 00 no escala más allá de exploraciones puntuales.
+      </div>
+<pre class="code"><span class="c1">-- corrés esto en tu cliente SQL favorito,</span>
+<span class="c1">-- después pegás el número en el chat de claude.ai</span>
+<span class="k">SELECT</span> <span class="f">COUNT</span>(<span class="n">*</span>)
+<span class="k">FROM</span> paciente p
+<span class="k">JOIN</span> orden_analisis oa <span class="k">ON</span> oa.paciente_id <span class="n">=</span> p.id
+<span class="k">WHERE</span> p.edad <span class="n">&gt;=</span> <span class="n">60</span>
+  <span class="k">AND</span> oa.estado <span class="n">=</span> <span class="s">'pendiente'</span>;</pre>
+    </div>
+
+    <!-- FASE 1 -->
+    <div class="code-block">
+      <div class="code-header">
+        <div class="ch-left">
+          <span class="ch-num">FASE 01</span>
+          <span class="ch-title">Tool del MCP server</span>
+        </div>
+        <span class="ch-tag">Python · MCP SDK</span>
+      </div>
+      <div class="code-note">
+        <span class="delta">nuevo · aparece la función</span>
+        Acá vive el core que va a sobrevivir en todas las fases siguientes. La definís una vez, la registrás como tool MCP, y Claude Desktop la descubre por el protocolo. <b>El cuerpo SQL es el mismo que en fase 00, pero envuelto como función.</b>
+      </div>
+<pre class="code"><span class="c1"># server.py — MCP server</span>
+<span class="k">from</span> mcp.server.fastmcp <span class="k">import</span> FastMCP
+<span class="k">import</span> psycopg2
+
+mcp <span class="n">=</span> <span class="f">FastMCP</span>(<span class="s">"laboratorio"</span>)
+
+<span class="n">@mcp.tool</span>()
+<span class="k">def</span> <span class="f">contar_pacientes_con_analisis_pendientes</span>(edad_minima: <span class="t">int</span>) <span class="n">-&gt;</span> <span class="t">int</span>:
+    <span class="s">"""Devuelve la cantidad de pacientes mayores o iguales a la edad
+    indicada que tienen al menos una orden de análisis pendiente."""</span>
+    conn <span class="n">=</span> psycopg2.<span class="f">connect</span>(<span class="n">DB_URL</span>)
+    <span class="k">with</span> conn.<span class="f">cursor</span>() <span class="k">as</span> cur:
+        cur.<span class="f">execute</span>(<span class="s">"""
+            SELECT COUNT(*)
+            FROM paciente p
+            JOIN orden_analisis oa ON oa.paciente_id = p.id
+            WHERE p.edad &gt;= %s
+              AND oa.estado = 'pendiente'
+        """</span>, (edad_minima,))
+        <span class="k">return</span> cur.<span class="f">fetchone</span>()[<span class="n">0</span>]
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="n">==</span> <span class="s">"__main__"</span>:
+    mcp.<span class="f">run</span>()</pre>
+    </div>
+
+    <!-- FASE 2 -->
+    <div class="code-block">
+      <div class="code-header">
+        <div class="ch-left">
+          <span class="ch-num">FASE 02</span>
+          <span class="ch-title">Tool como clase del agente Laravel</span>
+        </div>
+        <span class="ch-tag">PHP · Laravel</span>
+      </div>
+      <div class="code-note">
+        <span class="delta">cambio · misma lógica, otro envoltorio</span>
+        El cuerpo SQL es <b>literalmente el mismo</b>. Lo que cambia: ahora la función vive como clase Tool dentro de tu Laravel, el agente la conoce por su nombre, y los parámetros se validan con un schema que va al system prompt como definición de tool. <b>No hay más MCP en el medio</b> — el agente la invoca como método PHP.
+      </div>
+<pre class="code"><span class="c1">// app/Tools/ContarPacientesConAnalisisPendientesTool.php</span>
+<span class="k">namespace</span> App\Tools;
+
+<span class="k">use</span> Illuminate\Support\Facades\DB;
+
+<span class="k">class</span> <span class="t">ContarPacientesConAnalisisPendientesTool</span>
+{
+    <span class="k">public static</span> <span class="t">string</span> <span class="v">$name</span> <span class="n">=</span> <span class="s">'contar_pacientes_con_analisis_pendientes'</span>;
+
+    <span class="k">public static function</span> <span class="f">schema</span>(): <span class="t">array</span>
+    {
+        <span class="k">return</span> [
+            <span class="s">'name'</span> <span class="n">=&gt;</span> <span class="k">self</span>::<span class="v">$name</span>,
+            <span class="s">'description'</span> <span class="n">=&gt;</span> <span class="s">'Devuelve la cantidad de pacientes mayores '</span>
+                <span class="n">.</span> <span class="s">'o iguales a la edad indicada que tienen al menos '</span>
+                <span class="n">.</span> <span class="s">'una orden de análisis pendiente.'</span>,
+            <span class="s">'input_schema'</span> <span class="n">=&gt;</span> [
+                <span class="s">'type'</span> <span class="n">=&gt;</span> <span class="s">'object'</span>,
+                <span class="s">'properties'</span> <span class="n">=&gt;</span> [
+                    <span class="s">'edad_minima'</span> <span class="n">=&gt;</span> [
+                        <span class="s">'type'</span> <span class="n">=&gt;</span> <span class="s">'integer'</span>,
+                        <span class="s">'description'</span> <span class="n">=&gt;</span> <span class="s">'Edad mínima en años, inclusive.'</span>,
+                    ],
+                ],
+                <span class="s">'required'</span> <span class="n">=&gt;</span> [<span class="s">'edad_minima'</span>],
+            ],
+        ];
+    }
+
+    <span class="k">public function</span> <span class="f">execute</span>(<span class="t">array</span> <span class="v">$input</span>): <span class="t">int</span>
+    {
+        <span class="c1">// el SQL es el mismo de fase 01 — solo cambia el adaptador</span>
+        <span class="k">return</span> DB::<span class="f">connection</span>(<span class="s">'laboratorio'</span>)
+            <span class="n">-&gt;</span><span class="f">selectOne</span>(<span class="s">"
+                SELECT COUNT(*) AS total
+                FROM paciente p
+                JOIN orden_analisis oa ON oa.paciente_id = p.id
+                WHERE p.edad &gt;= ?
+                  AND oa.estado = 'pendiente'
+            "</span>, [<span class="v">$input</span>[<span class="s">'edad_minima'</span>]])<span class="n">-&gt;</span>total;
+    }
+}</pre>
+    </div>
+
+    <!-- FASE 3 -->
+    <div class="code-block">
+      <div class="code-header">
+        <div class="ch-left">
+          <span class="ch-num">FASE 03</span>
+          <span class="ch-title">Tool multi-tenant</span>
+        </div>
+        <span class="ch-tag">PHP · Laravel + tenant context</span>
+      </div>
+      <div class="code-note">
+        <span class="delta">cambio · resolución dinámica de tenant</span>
+        El SQL <b>sigue siendo el mismo</b>. La clase es casi idéntica a fase 02. Lo único que aparece es que la conexión a base se resuelve dinámicamente según qué cliente está usando la plataforma en este request. Una línea cambia. El resto, intacto.
+      </div>
+<pre class="code"><span class="c1">// app/Tools/ContarPacientesConAnalisisPendientesTool.php</span>
+<span class="k">namespace</span> App\Tools;
+
+<span class="k">use</span> App\Services\TenantContext;
+<span class="k">use</span> Illuminate\Support\Facades\DB;
+
+<span class="k">class</span> <span class="t">ContarPacientesConAnalisisPendientesTool</span>
+{
+    <span class="k">public static</span> <span class="t">string</span> <span class="v">$name</span> <span class="n">=</span> <span class="s">'contar_pacientes_con_analisis_pendientes'</span>;
+
+    <span class="k">public function</span> <span class="f">__construct</span>(<span class="k">private</span> <span class="t">TenantContext</span> <span class="v">$tenant</span>) {}
+
+    <span class="k">public static function</span> <span class="f">schema</span>(): <span class="t">array</span>
+    {
+        <span class="c1">// idéntico a fase 02</span>
+        <span class="k">return</span> [ <span class="c1">/* ... mismo schema ... */</span> ];
+    }
+
+    <span class="k">public function</span> <span class="f">execute</span>(<span class="t">array</span> <span class="v">$input</span>): <span class="t">int</span>
+    {
+        <span class="c1">// la única línea que cambia: la conexión sale del tenant activo</span>
+        <span class="v">$conn</span> <span class="n">=</span> <span class="v">$this</span><span class="n">-&gt;</span>tenant<span class="n">-&gt;</span><span class="f">databaseConnection</span>();
+
+        <span class="k">return</span> DB::<span class="f">connection</span>(<span class="v">$conn</span>)
+            <span class="n">-&gt;</span><span class="f">selectOne</span>(<span class="s">"
+                SELECT COUNT(*) AS total
+                FROM paciente p
+                JOIN orden_analisis oa ON oa.paciente_id = p.id
+                WHERE p.edad &gt;= ?
+                  AND oa.estado = 'pendiente'
+            "</span>, [<span class="v">$input</span>[<span class="s">'edad_minima'</span>]])<span class="n">-&gt;</span>total;
+    }
+}</pre>
+    </div>
+
+    <div style="margin-top: 32px; padding: 24px 28px; background: var(--surface-2); border-left: 3px solid var(--cyan); border-radius: 3px;">
+      <div class="eyebrow" style="color: var(--cyan)">› la moraleja</div>
+      <h3 style="margin-bottom: 12px;">El SQL es el activo. Todo lo demás es envoltura.</h3>
+      <p style="margin-bottom: 0;">
+        Mirando las cuatro versiones lado a lado, el <code style="font-family:var(--mono); color:var(--amber); font-size:13px">SELECT COUNT(*)</code> aparece idéntico en las cuatro fases.
+        Lo que cambia es el envoltorio: primero ejecutado a mano, después como tool MCP, después como clase PHP, después con resolución de tenant.
+        El trabajo difícil — entender el modelo de datos del laboratorio, escribir queries correctas, manejar edge cases — ese trabajo se hace una vez en fase 01 y se reusa en todas las fases superiores.
+        Por eso saltar de fase no es empezar de cero: es agregar una capa.
+      </p>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="container">
+    <span>spartan it · taller interno · fases del producto con LLM</span>
+    <span>parte del kit junto a <a class="link-out" href="economia-tokens.html">economía de tokens</a>, <a class="link-out" href="dimensiones-ia.html">dimensiones</a> y <a class="link-out" href="mcp-blueprint.html">blueprint MCP</a></span>
+  </div>
+  <div class="container" style="margin-top: 16px; opacity: 0.7; font-size: 10px;">
+    <span>esta app responde "¿en qué fase estoy?" · para el detalle técnico del protocolo MCP (prompts, resources, tools, transports), ver el <a class="link-out" href="mcp-blueprint.html">blueprint</a></span>
+  </div>
+</footer>
+
+<script>
+// ========== THEME TOGGLE ==========
+const THEME_KEY = 'spartan-fases-theme';
+const root = document.documentElement;
+const toggle = document.getElementById('theme-toggle');
+
+function applyTheme(theme) {
+  root.setAttribute('data-theme', theme);
+  toggle.textContent = theme === 'dark' ? 'Modo claro' : 'Modo oscuro';
+}
+
+try {
+  const saved = localStorage.getItem(THEME_KEY);
+  if (saved) applyTheme(saved);
+} catch(e) {}
+
+toggle.addEventListener('click', () => {
+  const current = root.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  try { localStorage.setItem(THEME_KEY, next); } catch(e) {}
+});
+
+// ========== TABS ==========
+const tabs = document.querySelectorAll('.tab');
+const panels = document.querySelectorAll('.panel');
+tabs.forEach(t => t.addEventListener('click', () => {
+  tabs.forEach(x => x.classList.remove('active'));
+  panels.forEach(x => x.classList.remove('active'));
+  t.classList.add('active');
+  document.getElementById(t.dataset.panel).classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}));
+
+// ========== PHASE SELECTOR ==========
+const phaseBtns = document.querySelectorAll('.phase-btn');
+const diagrams = document.querySelectorAll('.diagram-svg');
+const details = document.querySelectorAll('.phase-detail');
+
+phaseBtns.forEach(btn => btn.addEventListener('click', () => {
+  const p = btn.dataset.phase;
+  phaseBtns.forEach(b => b.classList.remove('active'));
+  diagrams.forEach(d => d.classList.remove('active'));
+  details.forEach(d => d.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelector(`.diagram-svg[data-phase="${p}"]`).classList.add('active');
+  document.querySelector(`.phase-detail[data-phase="${p}"]`).classList.add('active');
+}));
+
+// ========== DECISION TREE ==========
+const tree = {
+  start: {
+    crumb: ['Inicio'],
+    q: '¿Quién va a usar el agente <span class="accent">en producción</span>?',
+    help: 'No quien lo prueba ahora — quién lo va a usar día a día cuando esté listo.',
+    choices: [
+      {key:'A', text:'Yo / mi equipo técnico, para explorar', sub:'Demos internas, debugging, validación', next:'phase1'},
+      {key:'B', text:'Un cliente externo (una sola empresa)', sub:'Por ej. el lab, o la cerealera', next:'q-ui'},
+      {key:'C', text:'Varios clientes con el mismo agente', sub:'Tipo SaaS, varios labs o varias cerealeras', next:'q-tenants'},
+      {key:'D', text:'Nadie todavía, estoy explorando si tiene sentido', sub:'No hay producto ni cliente identificado', next:'phase0'},
+    ]
+  },
+  'q-ui': {
+    crumb: ['Inicio', 'Cliente único'],
+    q: '¿Cómo va a <span class="accent">interactuar</span> ese cliente con el agente?',
+    help: 'La interfaz que va a ver el usuario final del cliente (Luciana, los médicos, etc.).',
+    choices: [
+      {key:'A', text:'Una web o app propia hecha por nosotros', sub:'Login propio, branding, integraciones', next:'phase2'},
+      {key:'B', text:'Cada usuario se conecta con su propio Claude Desktop', sub:'Le instalamos el MCP server y se conecta', next:'phase1-extended'},
+      {key:'C', text:'Todavía no lo decidimos', sub:'Estamos en exploración', next:'q-control'},
+    ]
+  },
+  'q-tenants': {
+    crumb: ['Inicio', 'Varios clientes'],
+    q: '¿Cuántos clientes hay <span class="accent">contratando hoy</span>?',
+    help: 'No proyectados — los que ya firmaron o están al firmar el mes que viene.',
+    choices: [
+      {key:'A', text:'Uno solo, pero proyectamos 3+ a fin de año', sub:'Hay pipeline pero todavía no se concretó', next:'phase2-with-arch'},
+      {key:'B', text:'Dos, configuraciones bastante distintas', sub:'Cerealera + lab, por ejemplo', next:'phase2-twice'},
+      {key:'C', text:'Tres o más, varios con necesidades similares', sub:'Hay patrón que repetir', next:'phase3'},
+    ]
+  },
+  'q-control': {
+    crumb: ['Inicio', 'Cliente único', 'Sin definir UI'],
+    q: '¿Necesitás controlar el <span class="accent">costo por token</span> o aplicar caching?',
+    help: 'En fase 01 el system prompt de Claude Desktop pesa ~12k tokens y no lo controlás. Si eso es un problema para tu modelo de negocio, hay que saltar a fase 02.',
+    choices: [
+      {key:'A', text:'Sí, los tokens nos están costando demasiado', sub:'Salto necesario', next:'phase2'},
+      {key:'B', text:'No, el volumen es bajo y el costo es manejable', sub:'Fase 01 alcanza por ahora', next:'phase1-extended'},
+    ]
+  },
+  phase0: {
+    crumb: ['Inicio', 'Sin producto definido'],
+    verdict: {
+      pn: 'Fase 00',
+      title: 'Validá la idea con claude.ai antes de escribir código',
+      body: `
+        <p>Si todavía no hay un cliente o caso de uso concreto, no construyas nada todavía. Usá claude.ai
+        (o la app) y simulá las conversaciones que tendría el usuario final. Pegá ejemplos de datos a mano
+        y mirá si las respuestas tienen valor.</p>
+        <p>Cuando algo te empiece a importar lo suficiente como para conectarlo a datos reales,
+        pasás a fase 01.</p>
+      `,
+      meta: [['Esfuerzo','0 código'], ['Costo','suscripción','ok'], ['Próximo salto','Fase 01']],
+      next: [
+        'Identificá 1 persona real (no hipotética) que tendría este problema.',
+        'Hacé 5 conversaciones simuladas pegándole datos de ejemplo a claude.ai.',
+        'Si las respuestas le servirían a esa persona, listo para fase 01.',
+      ]
+    }
+  },
+  phase1: {
+    crumb: ['Inicio', 'Equipo técnico'],
+    verdict: {
+      pn: 'Fase 01',
+      title: 'MCP + Claude Desktop — donde están hoy con el lab',
+      body: `
+        <p>Para uso interno del equipo, esta arquitectura es <strong>la correcta</strong>. Alberto y vos
+        se conectan al MCP server del lab desde Claude Desktop, prueban consultas reales, validan qué funciona.
+        El costo va por la suscripción Standard.</p>
+        <p>Lo que conviene hacer en esta fase:</p>
+        <ul>
+          <li>Documentar qué consultas pide la gente realmente, en qué formato esperan la respuesta.</li>
+          <li>Identificar los edge cases del modelo de datos del cliente (nulos, formatos raros, etc.).</li>
+          <li>Cuando el cliente quiera "tenerlo para su equipo", saltás a fase 02 sin tirar nada.</li>
+        </ul>
+        <p style="font-size: 13px; color: var(--text-3); margin-top: 14px;">
+          <strong style="color: var(--amber)">Cuidado:</strong> no confundas "funciona en Claude Desktop"
+          con "está listo para producción". El cliente final no va a tener Claude Desktop.
+        </p>
+      `,
+      meta: [['Donde están','hoy'], ['Costo','suscripción','ok'], ['Próximo salto','Fase 02']],
+      next: [
+        'Llevá un registro de las 10 consultas más comunes que le hacen al MCP server.',
+        'Para cada una, anotá: tokens usados, latencia, si la respuesta fue útil o no.',
+        'Mostrale el MCP server funcionando al cliente real (no a tu equipo) y mirá su reacción.',
+        'Si dice "lo quiero para mi equipo", arrancá fase 02 con un alcance acotado.',
+      ]
+    }
+  },
+  'phase1-extended': {
+    crumb: ['Inicio', 'Cliente único', 'Sin UI propia'],
+    verdict: {
+      pn: 'Fase 01 ampliada',
+      title: 'Cliente único con Claude Desktop — funciona, pero con asteriscos',
+      body: `
+        <p>Es viable: le configurás el MCP server al cliente, le pasás el archivo de configuración,
+        cada uno de sus usuarios se conecta con su propia cuenta de Claude.</p>
+        <p>Lo que ganás: no escribís UI, no manejás facturación, no sos responsable del modelo.
+        Lo que perdés:</p>
+        <ul>
+          <li>Cada usuario del cliente necesita una suscripción Standard ($20/mes) — el cliente paga eso.</li>
+          <li>No controlás el system prompt — la calidad de respuesta depende del comportamiento default de Claude Desktop.</li>
+          <li>No podés cobrar por uso del LLM, solo por el setup y el MCP.</li>
+          <li>Si el cliente quiere personalizar la UI o integrar con su workflow, no podés.</li>
+        </ul>
+        <p>Es una opción válida para un cliente con presupuesto técnico y necesidades simples.
+        Para uno que quiere un producto "llave en mano", saltá a fase 02.</p>
+      `,
+      meta: [['Esfuerzo','bajo'], ['Margen','bajo','danger'], ['Próximo salto','Fase 02 cuando quiera UI']],
+      next: [
+        'Documentá el procedimiento de instalación del MCP server para usuarios no técnicos.',
+        'Definí el alcance contractual: cobrás setup + soporte, no uso del modelo.',
+        'Llevá métricas de soporte (cuántas veces los llaman a configurar algo).',
+        'Si el cliente pide UI propia o quiere personalizar respuestas, propuesta de fase 02.',
+      ]
+    }
+  },
+  phase2: {
+    crumb: ['Inicio', 'Cliente único', 'UI propia'],
+    verdict: {
+      pn: 'Fase 02',
+      title: 'Agente cliente-facing — el siguiente paso natural',
+      body: `
+        <p>Construís una web propia donde el usuario final del cliente entra y habla con el agente.
+        Backend en Laravel, system prompt definido por vos, tools como clases PHP nativas,
+        llamada directa al API de Anthropic.</p>
+        <p>Lo que ganás:</p>
+        <ul>
+          <li>Control total sobre prompt, modelo, caching, costos.</li>
+          <li>Facturación tuya — el cliente paga un fee mensual, vos pagás el API.</li>
+          <li>UI a medida, integrable con el workflow del cliente.</li>
+          <li>Aplicás todo lo de la <a href="economia-tokens.html" style="color: var(--amber)">otra app de economía de tokens</a> — prompt caching, semantic cache, truncate, etc.</li>
+        </ul>
+        <p>El trabajo del MCP del lab (las funciones SQL, el conocimiento del modelo de datos)
+        se transfiere directo. Las tools se reescriben como clases PHP en una tarde.</p>
+      `,
+      meta: [['Esfuerzo','2-4 semanas'], ['Margen','recurrente','ok'], ['Próximo salto','Fase 03 con 3+ clientes']],
+      next: [
+        'Definí un MVP claro: ¿qué 3-5 consultas tiene que resolver bien la primera versión?',
+        'Diseñá el system prompt en un archivo aparte (no hardcoded) — vas a iterar mucho.',
+        'Instrumentá uso, costo y latencia desde el día uno (ver app de economía de tokens).',
+        'Reescribí las tools del MCP como clases nativas en tu stack (Laravel, Node, lo que sea).',
+        'Definí cómo facturás al cliente: fee fijo, por uso, o híbrido.',
+      ]
+    }
+  },
+  'phase2-with-arch': {
+    crumb: ['Inicio', 'Varios clientes', 'Pipeline'],
+    verdict: {
+      pn: 'Fase 02 con arquitectura pensada para fase 03',
+      title: 'Construí fase 02 pero dejá el camino abierto',
+      body: `
+        <p>Hoy con un solo cliente firmado, fase 03 completa es prematura. Pero si proyectás 3+ a fin de año,
+        conviene <strong>diseñar las cosas críticas de fase 02 con multi-tenancy en mente</strong>:</p>
+        <ul>
+          <li>Configuración (system prompt, tools habilitadas, modelo) en base de datos, no hardcoded.</li>
+          <li>Conexión a la base del cliente como variable de entorno o config, no fija.</li>
+          <li>Logs y métricas con un campo <code>client_slug</code> desde el día uno.</li>
+        </ul>
+        <p>Esto no agrega complejidad — son decisiones de diseño. Cuando llegue el segundo y tercer cliente,
+        vas a estar listo para hacer la transición a fase 03 sin reescribir.</p>
+        <p>Lo que <strong>no hagas</strong>: tabla <code>tenants</code> con middleware completo, aislamiento de datos avanzado,
+        billing por uso. Eso es premature optimization.</p>
+      `,
+      meta: [['Esfuerzo','2-4 semanas'], ['Riesgo','controlado'], ['Próximo salto','Fase 03 al tercer cliente']],
+      next: [
+        'Guardá system prompt, tools habilitadas y modelo en una tabla por cliente.',
+        'Agregá un campo client_slug en todos los logs y métricas desde el día uno.',
+        'No construyas tabla tenants ni middleware de routing todavía — premature optimization.',
+        'Cuando llegue el tercer cliente, mirá los tres y refactorizá hacia fase 03.',
+      ]
+    }
+  },
+  'phase2-twice': {
+    crumb: ['Inicio', 'Varios clientes', 'Dos clientes'],
+    verdict: {
+      pn: 'Fase 02 ×2 — dos instancias separadas',
+      title: 'Resistí la tentación de abstraer prematuramente',
+      body: `
+        <p>Con dos clientes con necesidades distintas, lo más rápido es <strong>tener dos deploys separados de fase 02</strong>,
+        uno para cada cliente. Cada uno con su propio system prompt, sus tools, su config.</p>
+        <p>Por qué no fase 03 todavía:</p>
+        <ul>
+          <li>Con dos casos no tenés información suficiente para saber qué abstraer. La tercera implementación es la que te dice qué patrón es real y cuál es accidente.</li>
+          <li>Mantener dos repos casi iguales es molesto, pero menos que mantener un monolito multi-tenant mal diseñado.</li>
+          <li>Cuando llegue el tercer cliente, mirás los tres y sacás el patrón común. Ahí justifica fase 03.</li>
+        </ul>
+        <p>Es la regla de "tres es patrón, dos es coincidencia" aplicada a arquitectura.</p>
+      `,
+      meta: [['Esfuerzo','2 deploys'], ['Deuda técnica','aceptable'], ['Próximo salto','Fase 03 al tercer cliente']],
+      next: [
+        'Aceptá la duplicación — dos repos casi iguales es menos riesgo que un monolito mal diseñado.',
+        'Documentá las diferencias reales entre los dos clientes (system prompt, tools, modelo de datos).',
+        'Si una mejora se aplica a ambos, copiala manualmente — no abstraigas todavía.',
+        'Cuando aparezca el tercer cliente, ese es el momento de armar la abstracción real.',
+      ]
+    }
+  },
+  phase3: {
+    crumb: ['Inicio', 'Varios clientes', '3+ clientes'],
+    verdict: {
+      pn: 'Fase 03',
+      title: 'SaaS multi-tenant — Spartan deja de ser consultora',
+      body: `
+        <p>Con tres o más clientes con un agente similar, justifica el salto a plataforma:
+        un código base, configuración por cliente en base de datos, datos aislados, billing por uso.</p>
+        <p>Lo que aparece nuevo:</p>
+        <ul>
+          <li>Tabla <code>tenants</code> + middleware que resuelve el cliente activo en cada request.</li>
+          <li>Configuración por cliente (prompt, modelo, tools, quotas) en base de datos.</li>
+          <li>Conexión a base de datos dinámica por tenant — cada cliente tiene la suya.</li>
+          <li>Dashboard interno de Spartan con uso, costos e ingresos por cliente.</li>
+        </ul>
+        <p>Cambio de modelo de negocio: dejás de cobrar por proyecto y empezás a cobrar por suscripción.
+        Eso requiere armar onboarding, soporte, SLA, billing recurrente.</p>
+        <p style="font-size: 13px; color: var(--text-3); margin-top: 14px;">
+          <strong style="color: var(--amber)">No saltar antes de tiempo:</strong> con dos clientes,
+          fase 02 ×2 sigue siendo más rápida y barata. El salto a fase 03 es cuando el costo de mantener
+          deploys separados supera el costo de construir la abstracción.
+        </p>
+      `,
+      meta: [['Esfuerzo','2-3 meses'], ['Modelo','recurrente','ok'], ['Madurez','requerida','danger']],
+      next: [
+        'Tomá los 3 deploys de fase 02 y extraé el patrón común a una arquitectura única.',
+        'Diseñá la tabla tenants y el middleware de routing.',
+        'Resolvé aislamiento de datos (cada cliente con su conexión a base / namespace).',
+        'Armá el dashboard interno de Spartan: uso, costos e ingresos por cliente.',
+        'Definí el modelo comercial: onboarding, soporte, SLA, billing recurrente.',
+      ]
+    }
+  },
+};
+
+const treeHost = document.getElementById('tree-host');
+let path = ['start'];
+
+function renderTree() {
+  const stepKey = path[path.length - 1];
+  const step = tree[stepKey];
+  let html = '<div class="tree-step">';
+
+  html += '<div class="crumb">';
+  step.crumb.forEach((c, i) => {
+    html += `<span class="crumb-item${i === step.crumb.length-1 ? ' curr' : ''}">${c}</span>`;
+    if (i < step.crumb.length-1) html += '<span class="crumb-sep">›</span>';
+  });
+  html += '</div>';
+
+  if (step.q) {
+    html += `<div class="question">${step.q}</div>`;
+    if (step.help) html += `<p class="question-help">${step.help}</p>`;
+    html += '<div class="choices">';
+    step.choices.forEach(c => {
+      html += `
+        <button class="choice" data-next="${c.next}">
+          <span class="choice-key">${c.key}</span>
+          <span class="choice-text">${c.text}${c.sub ? `<small>${c.sub}</small>` : ''}</span>
+        </button>
+      `;
+    });
+    html += '</div>';
+  } else if (step.verdict) {
+    const nextHtml = step.verdict.next ? `
+      <div class="v-next">
+        <div class="v-next-title">› próximos pasos concretos</div>
+        <ul>
+          ${step.verdict.next.map(s => `<li>${s}</li>`).join('')}
+        </ul>
+      </div>
+    ` : '';
+    html += `
+      <div class="verdict">
+        <h3>Recomendación · ${step.verdict.pn}</h3>
+        <div class="v-title">${step.verdict.title}</div>
+        <div class="v-body">${step.verdict.body}</div>
+        <div class="v-meta">
+          ${step.verdict.meta.map(([k,v,cls]) => `
+            <div class="${cls || ''}">${k}<b>${v}</b></div>
+          `).join('')}
+        </div>
+        ${nextHtml}
+      </div>
+    `;
+  }
+
+  if (path.length > 1) {
+    html += '<button class="choice-back" id="tree-back">‹ volver</button>';
+  }
+  if (step.verdict) {
+    html += '<button class="choice-restart" id="tree-restart" style="margin-left:8px">↺ empezar de nuevo</button>';
+  }
+
+  html += '</div>';
+  treeHost.innerHTML = html;
+
+  treeHost.querySelectorAll('.choice').forEach(b => {
+    b.addEventListener('click', () => {
+      path.push(b.dataset.next);
+      renderTree();
+    });
+  });
+  const back = document.getElementById('tree-back');
+  if (back) back.addEventListener('click', () => { path.pop(); renderTree(); });
+  const restart = document.getElementById('tree-restart');
+  if (restart) restart.addEventListener('click', () => { path = ['start']; renderTree(); });
+}
+renderTree();
+</script>
+
+</body>
+</html>
