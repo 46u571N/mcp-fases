@@ -506,6 +506,7 @@
     <button class="tab active" data-panel="fases"><span class="tab-num">01</span>Las cuatro fases</button>
     <button class="tab" data-panel="diagnostico"><span class="tab-num">02</span>¿En qué fase estoy?</button>
     <button class="tab" data-panel="codigo"><span class="tab-num">03</span>La misma función en cada fase</button>
+    <button class="tab" data-panel="rol-mcp"><span class="tab-num">04</span>El rol del MCP fase a fase</button>
   </nav>
 
   <!-- ============ TAB 1: FASES ============ -->
@@ -1130,6 +1131,197 @@ mcp <span class="n">=</span> <span class="f">FastMCP</span>(<span class="s">"lab
         Lo que cambia es el envoltorio: primero ejecutado a mano, después como tool MCP, después como clase PHP, después con resolución de tenant.
         El trabajo difícil — entender el modelo de datos del laboratorio, escribir queries correctas, manejar edge cases — ese trabajo se hace una vez en fase 01 y se reusa en todas las fases superiores.
         Por eso saltar de fase no es empezar de cero: es agregar una capa.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ TAB 4: ROL DEL MCP POR FASE ============ -->
+  <section class="panel" id="rol-mcp">
+    <div class="eyebrow">› entender el cambio de rol</div>
+    <h2>El MCP no muere, cambia de función</h2>
+    <p class="lead">
+      Una pregunta que aparece cuando se atraviesa la transición 01 → 02:
+      <i>"¿el MCP server queda obsoleto cuando construyo mi propio agente?"</i>
+      la respuesta corta es no, pero su rol cambia drásticamente. acá el detalle por fase.
+    </p>
+
+    <div style="margin: 32px 0; padding: 20px 24px; background: var(--surface-2); border-left: 3px solid var(--amber); border-radius: 3px;">
+      <div class="eyebrow" style="color: var(--amber); margin-bottom: 8px;">› el principio rector</div>
+      <p style="margin-bottom: 0; font-size: 14px;">
+        <b>MCP es un protocolo entre procesos distintos.</b>
+        cuando el cliente del agente y las tools viven en el mismo proceso, el protocolo es overhead innecesario.
+        cuando viven en procesos distintos (claude desktop ↔ tu server, agente externo ↔ tu plataforma), el protocolo es la solución correcta.
+        toda la lógica de las cuatro fases se deriva de ese principio.
+      </p>
+    </div>
+
+    <!-- FASE 00 -->
+    <div style="margin-top: 40px; display: grid; grid-template-columns: 180px 1fr; gap: 32px; align-items: start; padding-bottom: 32px; border-bottom: 1px solid var(--line);">
+      <div>
+        <div class="eyebrow">FASE 00</div>
+        <h3 style="font-family: var(--mono); font-size: 18px; margin: 4px 0 8px;">Explorar</h3>
+        <div style="font-size: 12px; color: var(--text-3); line-height: 1.5;">jupyter, claude.ai, consultas sueltas a la base</div>
+      </div>
+      <div>
+        <div style="font-family: var(--mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.1em; margin-bottom: 8px;">¿APLICA MCP?</div>
+        <div style="font-size: 16px; font-weight: 600; margin-bottom: 12px;">No · todavía no tiene sentido</div>
+        <p style="margin-bottom: 0;">
+          en esta fase no hay agente, hay un humano (vos) que copia datos a claude.ai o corre queries a mano.
+          el protocolo MCP resuelve un problema que en fase 00 no existe.
+          el output de esta fase es entender el modelo de datos y las queries útiles — ese conocimiento se materializa en MCP recién en fase 01.
+        </p>
+      </div>
+    </div>
+
+    <!-- FASE 01 -->
+    <div style="margin-top: 32px; display: grid; grid-template-columns: 180px 1fr; gap: 32px; align-items: start; padding-bottom: 32px; border-bottom: 1px solid var(--line);">
+      <div>
+        <div class="eyebrow" style="color: var(--amber)">FASE 01</div>
+        <h3 style="font-family: var(--mono); font-size: 18px; margin: 4px 0 8px;">Conectar</h3>
+        <div style="font-size: 12px; color: var(--text-3); line-height: 1.5;">claude desktop + MCP server, uso interno del equipo</div>
+      </div>
+      <div>
+        <div style="font-family: var(--mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.1em; margin-bottom: 8px;">¿APLICA MCP?</div>
+        <div style="font-size: 16px; font-weight: 600; margin-bottom: 12px; color: var(--amber);">Sí · es el rol central</div>
+        <p style="margin-bottom: 12px;">
+          el MCP server es el <b>puente entre dos procesos distintos</b>: claude desktop (cliente de anthropic, no tu código) y la lógica de negocio (tu PHP corriendo en gcp).
+          son sistemas que no comparten memoria ni lenguaje, por eso necesitan un protocolo formal.
+          claude desktop le pide tools al MCP server vía JSON-RPC, el MCP responde con resultados estructurados.
+        </p>
+        <div style="font-family: var(--mono); font-size: 12px; background: var(--surface-2); padding: 12px 16px; border-radius: 4px; margin-bottom: 12px; color: var(--text-2);">
+          [claude desktop] ←—— protocolo MCP ——→ [tu MCP server] ——→ [DB del cliente]
+        </div>
+        <div style="font-size: 13px; color: var(--text-2);">
+          <b style="color: var(--text)">limitaciones de esta fase:</b>
+          el system prompt es de claude desktop (no controlable), no podés activar prompt caching ni elegir modelo ni instrumentar tokens.
+          la API de anthropic la consume claude desktop, no vos. <b>perfecto para uso interno, no escalable a producto comercial.</b>
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 02 -->
+    <div style="margin-top: 32px; display: grid; grid-template-columns: 180px 1fr; gap: 32px; align-items: start; padding-bottom: 32px; border-bottom: 1px solid var(--line);">
+      <div>
+        <div class="eyebrow" style="color: var(--cyan)">FASE 02</div>
+        <h3 style="font-family: var(--mono); font-size: 18px; margin: 4px 0 8px;">Operar</h3>
+        <div style="font-size: 12px; color: var(--text-3); line-height: 1.5;">agent loop propio con SDK, cliente-facing</div>
+      </div>
+      <div>
+        <div style="font-family: var(--mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.1em; margin-bottom: 8px;">¿APLICA MCP?</div>
+        <div style="font-size: 16px; font-weight: 600; margin-bottom: 12px; color: var(--cyan);">No para el cliente final · sí para uso interno paralelo</div>
+        <p style="margin-bottom: 12px;">
+          en fase 02 <b>vos sos ambos lados de la conversación</b>: el agent loop (tu código laravel) y las tools (también tu código) viven en el mismo proceso, comparten DB, comparten autoload.
+          el protocolo MCP no aporta nada — sería como abrir un socket HTTP localhost para que tu controller le hable a un service del mismo proyecto.
+          funciona pero es absurdo: agregás latencia, serialización JSON, manejo de errores HTTP, todo para resolver un problema que no existe.
+        </p>
+        <div style="font-family: var(--mono); font-size: 12px; background: var(--surface-2); padding: 12px 16px; border-radius: 4px; margin-bottom: 12px; color: var(--text-2);">
+          [tu app laravel: agent loop + tools como clases] ——→ [DB del cliente]
+        </div>
+        <div style="font-size: 13px; color: var(--text-2); margin-bottom: 12px;">
+          <b style="color: var(--text)">qué pasa con el MCP server existente:</b>
+          no se tira. sigue corriendo en paralelo para uso interno del equipo (vos, alberto, tomás siguen usando claude desktop + MCP para exploración y descubrimiento técnico).
+          es el patrón normal: <b>F1 y F2 conviven en el mismo proyecto</b>, ambos consumen los mismos services laravel adentro.
+          lo único que cambia es quién invoca a esos services: en F1 el MCP server vía protocolo, en F2 el agent loop vía PHP nativo.
+        </div>
+        <div style="font-size: 13px; color: var(--text-2);">
+          <b style="color: var(--text)">qué se gana:</b>
+          control total del system prompt, prompt caching activable, ruteo a haiku/sonnet/opus según complejidad, instrumentación detallada de tokens, semantic cache propio.
+          <b>todo lo que en F1 no se podía optimizar.</b>
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 03 -->
+    <div style="margin-top: 32px; display: grid; grid-template-columns: 180px 1fr; gap: 32px; align-items: start;">
+      <div>
+        <div class="eyebrow" style="color: var(--ok)">FASE 03</div>
+        <h3 style="font-family: var(--mono); font-size: 18px; margin: 4px 0 8px;">Escalar</h3>
+        <div style="font-size: 12px; color: var(--text-3); line-height: 1.5;">saas multi-tenant, agentes externos opcionales</div>
+      </div>
+      <div>
+        <div style="font-family: var(--mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.1em; margin-bottom: 8px;">¿APLICA MCP?</div>
+        <div style="font-size: 16px; font-weight: 600; margin-bottom: 12px; color: var(--ok);">No internamente · sí como puerta opcional para terceros</div>
+        <p style="margin-bottom: 12px;">
+          en fase 03 el agent loop sigue hablando directamente con los services (mismo principio que F2, ahora con scope por tenant).
+          el MCP <b>vuelve a tener sentido</b> pero con un rol nuevo: <b>puerta de entrada para agentes externos</b> que quieran integrarse con tu plataforma.
+        </p>
+        <div style="font-family: var(--mono); font-size: 12px; background: var(--surface-2); padding: 12px 16px; border-radius: 4px; margin-bottom: 12px; color: var(--text-2); line-height: 1.6;">
+          [tu saas multi-tenant]<br>
+          &nbsp;&nbsp;├── agent loop interno ——→ [services] ——→ [DBs por tenant]<br>
+          &nbsp;&nbsp;└── MCP server público (opcional) ←—— [claude desktop / agentes de terceros / integraciones]
+        </div>
+        <div style="font-size: 13px; color: var(--text-2);">
+          <b style="color: var(--text)">casos típicos donde el MCP vuelve a aparecer:</b>
+          el cliente quiere conectar su propio claude desktop a sus datos vía tu plataforma (cada cliente con sus credenciales y su scope);
+          partners que tienen su agente y quieren consultar tu plataforma como fuente de datos;
+          integraciones con agentes de terceros (chatgpt, gemini, agentes verticales) sin abrir tu DB directamente.
+          en estos casos el MCP <b>no es infraestructura principal, es feature opcional de la plataforma</b>.
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLA RESUMEN -->
+    <h3 style="margin-top: 56px; font-family: var(--mono); font-size: 18px;">Resumen comparado</h3>
+    <div class="aspects" style="margin-top: 16px;">
+      <table class="aspects-table">
+        <thead>
+          <tr>
+            <th>Aspecto</th>
+            <th>Fase 01</th>
+            <th>Fase 02</th>
+            <th>Fase 03</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cliente del agente</td>
+            <td data-phase="01">claude desktop (externo)</td>
+            <td data-phase="02">tu app laravel (interno)</td>
+            <td data-phase="03">tu app + opcionalmente terceros</td>
+          </tr>
+          <tr>
+            <td>¿Necesita MCP?</td>
+            <td data-phase="01">sí, como protocolo principal</td>
+            <td data-phase="02">no para el flujo principal</td>
+            <td data-phase="03">no para el flujo · sí como puerta externa</td>
+          </tr>
+          <tr>
+            <td>Dónde vive la lógica de las tools</td>
+            <td data-phase="01">handlers MCP en tu server</td>
+            <td data-phase="02">services laravel reutilizables</td>
+            <td data-phase="03">services laravel con scope por tenant</td>
+          </tr>
+          <tr>
+            <td>¿Quién paga los tokens?</td>
+            <td data-phase="01">el usuario (vía claude pro)</td>
+            <td data-phase="02">vos (vía tu cuenta de api)</td>
+            <td data-phase="03">vos, repercutido al cliente vía fee</td>
+          </tr>
+          <tr>
+            <td>Optimizaciones posibles</td>
+            <td data-phase="01">ninguna del lado del modelo</td>
+            <td data-phase="02">prompt caching, routing, semantic cache, logging</td>
+            <td data-phase="03">todas las de F2 + cache compartido por tenant</td>
+          </tr>
+          <tr>
+            <td>Estado del MCP server original</td>
+            <td data-phase="01">producción para uso del equipo</td>
+            <td data-phase="02">sigue corriendo en paralelo para uso interno</td>
+            <td data-phase="03">refactorizado como API pública con auth por tenant</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CONCLUSIÓN -->
+    <div style="margin-top: 40px; padding: 24px 28px; background: var(--surface-2); border-left: 3px solid var(--cyan); border-radius: 3px;">
+      <div class="eyebrow" style="color: var(--cyan)">› la conclusión</div>
+      <h3 style="margin-bottom: 12px;">MCP es protocolo, no producto.</h3>
+      <p style="margin-bottom: 0;">
+        confundir MCP con "el producto de IA" lleva a malas decisiones de arquitectura: rearmar todo cuando se cambia de fase, o mantener el MCP server como cuello de botella en F2/F3 cuando no aporta valor.
+        la pregunta correcta no es "¿el MCP sirve o no?" sino "<b>¿quién es el cliente del agente?</b>".
+        si sos vos mismo (F2 interno), no necesitás MCP. si es un cliente externo no controlado por vos (F1, F3 puerta externa), sí.
+        el resto se deriva de eso.
       </p>
     </div>
   </section>
